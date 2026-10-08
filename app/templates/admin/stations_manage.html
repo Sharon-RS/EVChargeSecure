@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header">
             <h3>Registered Station Hubs</h3>
-            <span class="badge badge-available">{{ stations|length }} Configured</span>
+            <span class="badge badge-available">● {{ stations|length }} Configured</span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -29,12 +29,12 @@
                             <td>#{{ s.id }}</td>
                             <td><strong>{{ s.name }}</strong></td>
                             <td style="font-size: 0.8rem; color: var(--text-muted);">{{ s.location }}</td>
-                            <td><span style="color: var(--electric-cyan); font-weight: 700;">{{ s.count_points }}</span></td>
+                            <td><span style="color: var(--ev-blue); font-weight: 700;">{{ s.count_points }}</span></td>
                             <td>
                                 {% if s.status == 'ACTIVE' %}
-                                    <span class="badge badge-available">ACTIVE</span>
+                                    <span class="badge badge-available">● ACTIVE</span>
                                 {% else %}
-                                    <span class="badge badge-maintenance">{{ s.status }}</span>
+                                    <span class="badge badge-maintenance">⚠️ {{ s.status }}</span>
                                 {% endif %}
                             </td>
                         </tr>

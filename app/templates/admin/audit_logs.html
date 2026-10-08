@@ -22,7 +22,7 @@
 <div class="card">
     <div class="card-header">
         <h3>System Audit Entries</h3>
-        <span class="badge badge-available">{{ logs|length }} Log Entries</span>
+        <span class="badge badge-available">● {{ logs|length }} Log Entries</span>
     </div>
     <div class="card-body">
         {% if logs %}
@@ -41,25 +41,25 @@
                 <tbody>
                     {% for log in logs %}
                     <tr>
-                        <td style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">{{ log.timestamp }}</td>
+                        <td style="font-size: 0.78rem; color: var(--text-muted); font-family: ui-monospace, monospace;">{{ log.timestamp }}</td>
                         <td>
                             <strong>{{ log.username or 'Anonymous/System' }}</strong>
                             {% if log.user_id %}
                                 <span style="font-size: 0.7rem; color: var(--text-dim); display: block;">ID: #{{ log.user_id }}</span>
                             {% endif %}
                         </td>
-                        <td><code style="color: var(--electric-cyan); font-size: 0.8rem;">{{ log.ip_address or '127.0.0.1' }}</code></td>
-                        <td><code style="font-size: 0.8rem; font-weight: 700; color: #f1f5f9;">{{ log.event_type }}</code></td>
+                        <td><code style="color: var(--ev-blue); font-size: 0.8rem;">{{ log.ip_address or '127.0.0.1' }}</code></td>
+                        <td><code style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); background: var(--bg-subtle);">{{ log.event_type }}</code></td>
                         <td>
                             {% if log.severity == 'SECURITY_ALERT' %}
-                                <span class="badge badge-maintenance">ALERT</span>
+                                <span class="badge badge-maintenance">⚠️ ALERT</span>
                             {% elif log.severity == 'WARNING' %}
-                                <span class="badge badge-reserved">WARNING</span>
+                                <span class="badge badge-reserved">⏳ WARN</span>
                             {% else %}
-                                <span class="badge badge-available">INFO</span>
+                                <span class="badge badge-available">● INFO</span>
                             {% endif %}
                         </td>
-                        <td style="font-size: 0.84rem; max-width: 400px;">
+                        <td style="font-size: 0.84rem; max-width: 400px; color: var(--text-muted);">
                             {{ log.description }}
                         </td>
                     </tr>

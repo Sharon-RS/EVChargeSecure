@@ -15,31 +15,46 @@
                 <div class="brand-icon">⚡</div>
                 <div class="brand-text">
                     <h2>EVChargeSecure</h2>
-                    <span>Secure Fleet Grid</span>
+                    <span>Enterprise EV Grid</span>
                 </div>
             </a>
 
             <ul class="nav-links">
                 {% if current_user.id %}
-                    <li class="nav-section-title">User Operations</li>
-                    <li><a href="{{ url_for('user.dashboard') }}" class="{{ 'active' if request.endpoint == 'user.dashboard' }}">📊 Overview Dashboard</a></li>
-                    <li><a href="{{ url_for('user.stations') }}" class="{{ 'active' if request.endpoint in ['user.stations', 'user.station_detail'] }}">🔌 Locate Stations</a></li>
-                    <li><a href="{{ url_for('user.history') }}" class="{{ 'active' if request.endpoint == 'user.history' }}">📜 Charging History</a></li>
-
                     {% if current_user.role == 'ADMIN' %}
                         <li class="nav-section-title">Fleet Administration</li>
-                        <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">⚡ Admin Fleet Hub</a></li>
-                        <li><a href="{{ url_for('admin.manage_stations') }}" class="{{ 'active' if request.endpoint == 'admin.manage_stations' }}">🏢 Manage Stations</a></li>
-                        <li><a href="{{ url_for('admin.manage_points') }}" class="{{ 'active' if request.endpoint == 'admin.manage_points' }}">🔌 Charging Points & Power</a></li>
-                        <li><a href="{{ url_for('admin.maintenance') }}" class="{{ 'active' if request.endpoint == 'admin.maintenance' }}">🛠️ Maintenance Logs</a></li>
-                        <li><a href="{{ url_for('admin.reservations') }}" class="{{ 'active' if request.endpoint == 'admin.reservations' }}">📅 All Reservations</a></li>
-                        <li><a href="{{ url_for('admin.sessions') }}" class="{{ 'active' if request.endpoint == 'admin.sessions' }}">🔋 Active Sessions</a></li>
-                        <li><a href="{{ url_for('admin.audit_logs') }}" class="{{ 'active' if request.endpoint == 'admin.audit_logs' }}">🛡️ Security Audit Logs</a></li>
-                    {% endif %}
-                {% endif %}
+                        <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">📊 Dashboard</a></li>
+                        <li><a href="{{ url_for('admin.manage_stations') }}" class="{{ 'active' if request.endpoint == 'admin.manage_stations' }}">🏢 Stations</a></li>
+                        <li><a href="{{ url_for('admin.manage_points') }}" class="{{ 'active' if request.endpoint == 'admin.manage_points' }}">🔌 Charging Points</a></li>
+                        <li><a href="{{ url_for('admin.reservations') }}" class="{{ 'active' if request.endpoint == 'admin.reservations' }}">📅 Reservations</a></li>
+                        <li><a href="{{ url_for('admin.sessions') }}" class="{{ 'active' if request.endpoint == 'admin.sessions' }}">🔋 Sessions</a></li>
+                        <li><a href="{{ url_for('admin.maintenance') }}" class="{{ 'active' if request.endpoint == 'admin.maintenance' }}">🛠️ Maintenance</a></li>
+                        <li><a href="{{ url_for('admin.audit_logs') }}" class="{{ 'active' if request.endpoint == 'admin.audit_logs' }}">🛡️ Audit Logs</a></li>
+                        <li><a href="{{ url_for('vulns_demo.lab_home') }}" class="{{ 'active' if request.endpoint == 'vulns_demo.lab_home' }}">🔬 Security</a></li>
 
-                <li class="nav-section-title">Academic Assessment</li>
-                <li><a href="{{ url_for('vulns_demo.lab_home') }}" class="{{ 'active' if request.endpoint == 'vulns_demo.lab_home' }}">🔬 Security Lab Showcase</a></li>
+                        <li class="nav-section-title">Driver Portal View</li>
+                        <li><a href="{{ url_for('user.dashboard') }}" class="{{ 'active' if request.endpoint == 'user.dashboard' }}">🚗 Driver Dashboard</a></li>
+                        <li><a href="{{ url_for('user.stations') }}" class="{{ 'active' if request.endpoint in ['user.stations', 'user.station_detail'] }}">🔌 Find Stations</a></li>
+                    {% else %}
+                        <li class="nav-section-title">Driver Portal</li>
+                        <li><a href="{{ url_for('user.dashboard') }}" class="{{ 'active' if request.endpoint == 'user.dashboard' }}">📊 Dashboard</a></li>
+                        <li><a href="{{ url_for('user.stations') }}" class="{{ 'active' if request.endpoint in ['user.stations', 'user.station_detail'] }}">🔌 Find Stations</a></li>
+                        <li><a href="{{ url_for('user.reservations_view') }}" class="{{ 'active' if request.endpoint == 'user.reservations_view' }}">📅 Reservations</a></li>
+                        <li><a href="{{ url_for('user.charging_redirect') }}" class="{{ 'active' if request.endpoint in ['user.charging_redirect', 'user.charging_view'] }}">⚡ Charging</a></li>
+                        <li><a href="{{ url_for('user.history') }}" class="{{ 'active' if request.endpoint == 'user.history' }}">📜 History</a></li>
+                        <li><a href="{{ url_for('user.payments_view') }}" class="{{ 'active' if request.endpoint in ['user.payments_view', 'user.payment_view', 'user.receipt'] }}">💳 Payments</a></li>
+                        <li><a href="{{ url_for('user.profile_view') }}" class="{{ 'active' if request.endpoint == 'user.profile_view' }}">👤 Profile</a></li>
+
+                        <li class="nav-section-title">Academic Assessment</li>
+                        <li><a href="{{ url_for('vulns_demo.lab_home') }}" class="{{ 'active' if request.endpoint == 'vulns_demo.lab_home' }}">🔬 Security Lab</a></li>
+                    {% endif %}
+                {% else %}
+                    <li class="nav-section-title">Welcome</li>
+                    <li><a href="{{ url_for('auth.login') }}" class="{{ 'active' if request.endpoint == 'auth.login' }}">🔑 Sign In</a></li>
+                    <li><a href="{{ url_for('auth.register') }}" class="{{ 'active' if request.endpoint == 'auth.register' }}">📝 Register</a></li>
+                    <li class="nav-section-title">Assessment</li>
+                    <li><a href="{{ url_for('vulns_demo.lab_home') }}" class="{{ 'active' if request.endpoint == 'vulns_demo.lab_home' }}">🔬 Security Lab Showcase</a></li>
+                {% endif %}
             </ul>
 
             <div class="sidebar-footer">

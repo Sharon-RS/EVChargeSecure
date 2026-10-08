@@ -6,8 +6,8 @@
 {% block content %}
 <div class="card" style="margin-bottom: 2rem;">
     <div class="card-body">
-        <form method="GET" action="{{ url_for('user.stations') }}" style="display: flex; gap: 1rem; align-items: center;">
-            <div style="flex: 1;">
+        <form method="GET" action="{{ url_for('user.stations') }}" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
                 <input type="text" name="q" class="form-control" placeholder="Search by station name, location, or area (e.g. Chennai Central, OMR, Anna Nagar)..." value="{{ search_query }}">
             </div>
             <button type="submit" class="btn btn-primary">Search Grid</button>
@@ -24,22 +24,22 @@
         <div class="card-header">
             <div>
                 <h3 style="margin-bottom: 0.2rem;">{{ station.name }}</h3>
-                <span style="font-size: 0.8rem; color: var(--text-muted);">📍 {{ station.location }}</span>
+                <span style="font-size: 0.82rem; color: var(--text-muted);">📍 {{ station.location }}</span>
             </div>
             {% if station.available_points > 0 %}
-                <span class="badge badge-available">{{ station.available_points }} / {{ station.total_points }} Available</span>
+                <span class="badge badge-available">● {{ station.available_points }} / {{ station.total_points }} Available</span>
             {% else %}
-                <span class="badge badge-maintenance">All Occupied</span>
+                <span class="badge badge-maintenance">⚠️ All Occupied</span>
             {% endif %}
         </div>
         <div class="card-body">
-            <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">
+            <p style="font-size: 0.84rem; color: var(--text-dim); margin-bottom: 1.25rem;">
                 {{ station.address }}
             </p>
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-dim); display: block;">Connectors</span>
-                    <span style="font-size: 0.85rem; color: var(--electric-cyan); font-weight: 600;">CCS2, Type 2, CHAdeMO</span>
+                    <span style="font-size: 0.74rem; color: var(--text-dim); display: block; text-transform: uppercase;">Connectors</span>
+                    <span style="font-size: 0.85rem; color: var(--ev-blue); font-weight: 600;">CCS2 • Type 2 • CHAdeMO</span>
                 </div>
                 <a href="{{ url_for('user.station_detail', station_id=station.id) }}" class="btn btn-primary btn-sm">
                     Inspect & Book Slot →

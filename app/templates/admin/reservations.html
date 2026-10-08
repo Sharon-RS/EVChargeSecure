@@ -7,7 +7,7 @@
 <div class="card">
     <div class="card-header">
         <h3>System-Wide Slot Bookings</h3>
-        <span class="badge badge-available">{{ reservations|length }} Bookings Recorded</span>
+        <span class="badge badge-available">● {{ reservations|length }} Bookings Recorded</span>
     </div>
     <div class="card-body">
         {% if reservations %}
@@ -33,19 +33,19 @@
                         </td>
                         <td>
                             <strong>{{ r.station_name }}</strong>
-                            <span style="display: block; font-size: 0.75rem; color: var(--electric-cyan);">{{ r.point_name }}</span>
+                            <span style="display: block; font-size: 0.75rem; color: var(--ev-blue); font-weight: 600;">{{ r.point_name }}</span>
                         </td>
                         <td>{{ r.start_time[:19].replace('T', ' ') }}</td>
                         <td>{{ r.end_time[:19].replace('T', ' ') }}</td>
                         <td>
                             {% if r.status == 'ACTIVE' %}
-                                <span class="badge badge-available">ACTIVE</span>
+                                <span class="badge badge-available">● ACTIVE</span>
                             {% elif r.status == 'COMPLETED' %}
-                                <span class="badge badge-completed">COMPLETED</span>
+                                <span class="badge badge-completed">✓ COMPLETED</span>
                             {% elif r.status == 'CANCELLED' %}
-                                <span class="badge badge-maintenance">CANCELLED</span>
+                                <span class="badge badge-maintenance">⚠️ CANCELLED</span>
                             {% else %}
-                                <span class="badge badge-reserved">{{ r.status }}</span>
+                                <span class="badge badge-reserved">⏳ {{ r.status }}</span>
                             {% endif %}
                         </td>
                     </tr>

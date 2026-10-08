@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}{{ station.name }} - EVChargeSecure{% endblock %}
+{% block title %}Terminal Terminals - {{ station.name }}{% endblock %}
 {% block page_heading %}{{ station.name }}{% endblock %}
 
 {% block content %}
 <div class="card" style="margin-bottom: 2rem;">
     <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
-            <h2 style="font-size: 1.5rem; font-weight: 700;">{{ station.name }}</h2>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ station.name }}</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">📍 {{ station.location }} • {{ station.address }}</p>
         </div>
         <div>
@@ -38,11 +38,11 @@
                     {% for p in points %}
                     <tr>
                         <td>
-                            <strong style="color: var(--electric-cyan); font-size: 1rem;">{{ p.identifier }}</strong>
+                            <strong style="color: var(--ev-blue); font-size: 1rem;">{{ p.identifier }}</strong>
                         </td>
                         <td>{{ p.connector_type }}</td>
                         <td><strong>{{ p.max_power_kw }} kW</strong></td>
-                        <td style="color: var(--ev-green); font-weight: 600;">₹{{ "%.2f"|format(p.tariff_per_kwh) }}</td>
+                        <td style="color: var(--ev-green); font-weight: 700;">₹{{ "%.2f"|format(p.tariff_per_kwh) }}</td>
                         <td>
                             {% if p.status == 'AVAILABLE' %}
                                 <span class="badge badge-available">● Available</span>
@@ -53,7 +53,7 @@
                             {% elif p.status == 'MAINTENANCE' %}
                                 <span class="badge badge-maintenance">🛠️ Maintenance</span>
                             {% else %}
-                                <span class="badge badge-maintenance">Offline</span>
+                                <span class="badge badge-offline">⭘ Offline</span>
                             {% endif %}
                         </td>
                         <td>

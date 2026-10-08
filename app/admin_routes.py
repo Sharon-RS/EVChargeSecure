@@ -324,6 +324,8 @@ def sessions():
     return render_template("admin/sessions.html", sessions=sess_list)
 
 @admin_bp.route("/logs")
+@admin_bp.route("/audit-logs")
+@admin_bp.route("/audit_logs")
 @admin_required
 def audit_logs():
     severity_filter = request.args.get("severity", "").strip()

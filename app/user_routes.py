@@ -512,3 +512,32 @@ def receipt(payment_id):
     """, (payment["session_id"],)).fetchone()
 
     return render_template("user/receipt.html", payment=payment, session_data=session_data)
+
+@user_bp.route("/reservations")
+@login_required
+def reservations_view():
+    return redirect(url_for("user.history") + "#reservations")
+
+@user_bp.route("/charging")
+@login_required
+def charging_redirect():
+    db = get_db()
+    active_session = db.execute(
+        "SELECT id FROM charging_sessions WHERE user_id = ? AND status = 'ACTIVE' ORDER BY start_time DESC LIMIT 1",
+        (session["user_id"],)
+    ).fetchone()
+    if active_session:
+        return redirect(url_for("user.charging_view", session_id=active_session["id"]))
+    flash("No active charging session in progress. Locate a station to reserve a slot and charge.", "info")
+    return redirect(url_for("user.stations"))
+
+@user_bp.route("/payments")
+@login_required
+def payments_view():
+    return redirect(url_for("user.history") + "#payments")
+
+@user_bp.route("/profile")
+@login_required
+def profile_view():
+    return redirect(url_for("user.dashboard"))
+

@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header">
             <h3>Schedule Maintenance Task</h3>
-            <span class="badge badge-maintenance">Downtime Mitigation</span>
+            <span class="badge badge-maintenance">⚠️ Downtime Mitigation</span>
         </div>
         <div class="card-body">
             <form action="{{ url_for('admin.maintenance') }}" method="POST">
@@ -50,7 +50,7 @@
     <div class="card">
         <div class="card-header">
             <h3>Maintenance Records & Health Log</h3>
-            <span class="badge badge-available">{{ tickets|length }} Total</span>
+            <span class="badge badge-available">● {{ tickets|length }} Total</span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -74,12 +74,12 @@
                                     {{ t.point_name if t.point_name else "Station-Wide" }}
                                 </span>
                             </td>
-                            <td style="font-size: 0.82rem;">{{ t.description }}</td>
+                            <td style="font-size: 0.84rem; color: var(--text-muted);">{{ t.description }}</td>
                             <td>
                                 {% if t.status == 'IN_PROGRESS' %}
-                                    <span class="badge badge-maintenance">In Progress</span>
+                                    <span class="badge badge-maintenance">🛠️ In Progress</span>
                                 {% else %}
-                                    <span class="badge badge-available">Resolved</span>
+                                    <span class="badge badge-available">✓ Resolved</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -89,7 +89,7 @@
                                         <button type="submit" class="btn btn-success btn-sm">Resolve</button>
                                     </form>
                                 {% else %}
-                                    <span style="font-size: 0.75rem; color: var(--text-dim);">✓ Operational</span>
+                                    <span style="font-size: 0.75rem; color: var(--ev-green); font-weight: 600;">✓ Operational</span>
                                 {% endif %}
                             </td>
                         </tr>

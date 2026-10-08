@@ -4,7 +4,7 @@
 {% block page_heading %}Driver Charging & Billing Logs{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card" id="payments">
     <div class="card-header">
         <h3>Charging Sessions History</h3>
         <span style="font-size: 0.8rem; color: var(--text-muted);">Scoped Strictly to Your Account (IDOR Protected)</span>
@@ -34,14 +34,14 @@
                         </td>
                         <td>{{ r.connector_type }}</td>
                         <td><strong>{{ r.energy_kwh }} kWh</strong></td>
-                        <td style="color: var(--electric-cyan); font-weight: 600;">₹{{ "%.2f"|format(r.total_cost) }}</td>
+                        <td style="color: var(--ev-blue); font-weight: 600;">₹{{ "%.2f"|format(r.total_cost) }}</td>
                         <td>
                             {% if r.payment_status == 'PAID' %}
-                                <span class="badge badge-available">PAID</span>
+                                <span class="badge badge-available">● PAID</span>
                             {% elif r.status == 'COMPLETED' %}
-                                <span class="badge badge-reserved">UNPAID</span>
+                                <span class="badge badge-reserved">⏳ UNPAID</span>
                             {% else %}
-                                <span class="badge badge-charging">ACTIVE</span>
+                                <span class="badge badge-charging">⚡ ACTIVE</span>
                             {% endif %}
                         </td>
                         <td>
@@ -64,7 +64,7 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card" id="reservations">
     <div class="card-header">
         <h3>Slot Reservation Records</h3>
     </div>
@@ -90,13 +90,13 @@
                         <td>{{ res.created_at }}</td>
                         <td>
                             {% if res.status == 'ACTIVE' %}
-                                <span class="badge badge-available">ACTIVE</span>
+                                <span class="badge badge-available">● ACTIVE</span>
                             {% elif res.status == 'COMPLETED' %}
-                                <span class="badge badge-completed">COMPLETED</span>
+                                <span class="badge badge-completed">✓ COMPLETED</span>
                             {% elif res.status == 'CANCELLED' %}
-                                <span class="badge badge-maintenance">CANCELLED</span>
+                                <span class="badge badge-maintenance">⚠️ CANCELLED</span>
                             {% else %}
-                                <span class="badge badge-reserved">{{ res.status }}</span>
+                                <span class="badge badge-reserved">⏳ {{ res.status }}</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -105,7 +105,7 @@
             </table>
         </div>
         {% else %}
-        <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reservation history found.</p>
+        <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reservation records currently logged.</p>
         {% endif %}
     </div>
 </div>

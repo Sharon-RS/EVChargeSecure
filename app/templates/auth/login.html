@@ -12,7 +12,7 @@
             <div class="auth-header">
                 <div class="brand-icon" style="margin: 0 auto; width: 48px; height: 48px; font-size: 1.5rem;">⚡</div>
                 <h2>EVChargeSecure</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem;">Secure EV Charging Station Infrastructure</p>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.35rem;">Secure EV Charging Station Infrastructure</p>
             </div>
 
             <!-- Flash alerts -->
@@ -30,8 +30,8 @@
 
             <!-- Quick Demo Credentials for Lab Evaluator -->
             <div class="quick-fill-box">
-                <strong style="color: var(--electric-cyan);">🎓 Lab Evaluation Quick-Fill:</strong>
-                <p style="color: var(--text-dim); margin-top: 0.2rem; font-size: 0.72rem;">Click any role to populate credentials automatically:</p>
+                <strong style="color: var(--ev-blue);">🎓 Evaluation Quick-Fill:</strong>
+                <p style="color: var(--text-dim); margin-top: 0.2rem; font-size: 0.75rem;">Click any role to populate credentials automatically:</p>
                 <div class="quick-fill-pills">
                     <button type="button" class="pill-btn" onclick="fillLogin('admin', 'Admin@Secure2026!')">🛡️ Fleet Admin</button>
                     <button type="button" class="pill-btn" onclick="fillLogin('user1', 'User1@Secure2026!')">🚗 EV Driver (User1)</button>
@@ -56,11 +56,11 @@
             </form>
 
             <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
-                Don't have an account? <a href="{{ url_for('auth.register') }}" style="color: var(--electric-cyan); text-decoration: none; font-weight: 600;">Create Account</a>
+                Don't have an account? <a href="{{ url_for('auth.register') }}" style="color: var(--ev-blue); text-decoration: none; font-weight: 600;">Create Account</a>
             </div>
 
             <div style="text-align: center; margin-top: 1rem;">
-                <a href="{{ url_for('vulns_demo.lab_home') }}" style="font-size: 0.75rem; color: var(--ev-green); text-decoration: none;">🔬 View Security Lab Vulnerability Demos</a>
+                <a href="{{ url_for('vulns_demo.lab_home') }}" style="font-size: 0.78rem; color: var(--ev-blue); text-decoration: none; font-weight: 600;">🔬 View Security Lab Vulnerability Demos</a>
             </div>
         </div>
     </div>

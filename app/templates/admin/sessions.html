@@ -7,7 +7,7 @@
 <div class="card">
     <div class="card-header">
         <h3>Master Charging Sessions Ledger</h3>
-        <span class="badge badge-available">{{ sessions|length }} Sessions</span>
+        <span class="badge badge-available">● {{ sessions|length }} Sessions</span>
     </div>
     <div class="card-body">
         {% if sessions %}
@@ -32,23 +32,23 @@
                         <td><strong>{{ s.username }}</strong></td>
                         <td>
                             {{ s.station_name }}
-                            <span style="display: block; font-size: 0.75rem; color: var(--electric-cyan);">{{ s.point_name }}</span>
+                            <span style="display: block; font-size: 0.75rem; color: var(--ev-blue); font-weight: 600;">{{ s.point_name }}</span>
                         </td>
                         <td><strong>{{ s.energy_kwh }} kWh</strong></td>
                         <td>₹{{ "%.2f"|format(s.tariff_per_kwh) }}</td>
                         <td style="color: var(--ev-green); font-weight: 700;">₹{{ "%.2f"|format(s.total_cost) }}</td>
                         <td>
                             {% if s.payment_status == 'PAID' %}
-                                <span class="badge badge-available">PAID</span>
+                                <span class="badge badge-available">● PAID</span>
                             {% elif s.status == 'COMPLETED' %}
-                                <span class="badge badge-reserved">COMPLETED</span>
+                                <span class="badge badge-reserved">⏳ COMPLETED</span>
                             {% else %}
-                                <span class="badge badge-charging">ACTIVE</span>
+                                <span class="badge badge-charging">⚡ ACTIVE</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if s.transaction_ref %}
-                                <code style="font-size: 0.75rem; color: var(--electric-cyan);">{{ s.transaction_ref }}</code>
+                                <code style="font-size: 0.75rem; color: var(--ev-blue);">{{ s.transaction_ref }}</code>
                             {% else %}
                                 <span style="color: var(--text-dim); font-size: 0.8rem;">Unsettled</span>
                             {% endif %}

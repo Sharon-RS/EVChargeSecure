@@ -8,7 +8,7 @@
     <div class="card">
         <div class="card-header">
             <h3>Terminal Specifications</h3>
-            <span class="badge badge-available">Ready for Locking</span>
+            <span class="badge badge-available">● Ready for Locking</span>
         </div>
         <div class="card-body">
             <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -20,7 +20,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
                     <div>
                         <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Terminal Code</span>
-                        <p style="font-size: 1.2rem; font-weight: 700; color: var(--electric-cyan);">{{ point.identifier }}</p>
+                        <p style="font-size: 1.2rem; font-weight: 700; color: var(--ev-blue);">{{ point.identifier }}</p>
                     </div>
                     <div>
                         <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Connector Architecture</span>
@@ -28,15 +28,15 @@
                     </div>
                     <div>
                         <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Rated Power</span>
-                        <p style="font-size: 1.2rem; font-weight: 700; color: #38bdf8;">{{ point.max_power_kw }} kW</p>
+                        <p style="font-size: 1.2rem; font-weight: 700; color: var(--ev-blue);">{{ point.max_power_kw }} kW</p>
                     </div>
                     <div>
                         <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Energy Tariff</span>
                         <p style="font-size: 1.2rem; font-weight: 700; color: var(--ev-green);">₹{{ "%.2f"|format(point.tariff_per_kwh) }} <small style="font-size: 0.8rem;">/ kWh</small></p>
                     </div>
                 </div>
-                <div style="background: rgba(0, 242, 254, 0.05); padding: 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--electric-cyan);">
-                    <p style="font-size: 0.78rem; color: #bae6fd;">
+                <div style="background: var(--ev-blue-subtle); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--ev-blue-border); border-left: 4px solid var(--ev-blue);">
+                    <p style="font-size: 0.82rem; color: #075985;">
                         🔒 <strong>Zero-Race Guarantee:</strong> This booking uses an atomic SQL test-and-set transaction to prevent concurrent double-booking.
                     </p>
                 </div>

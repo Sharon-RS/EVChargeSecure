@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header">
             <h3>Invoice Breakdown</h3>
-            <span class="badge badge-completed">Session Completed</span>
+            <span class="badge badge-completed">✓ Session Completed</span>
         </div>
         <div class="card-body">
             <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -36,13 +36,13 @@
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem;">
                     <span style="font-size: 1.1rem; font-weight: 700;">Total Authoritative Amount:</span>
-                    <span style="font-size: 1.8rem; font-weight: 800; color: var(--electric-cyan);">
+                    <span style="font-size: 1.8rem; font-weight: 800; color: var(--ev-blue);">
                         ₹{{ "%.2f"|format(session_data.total_cost) }}
                     </span>
                 </div>
 
-                <div style="background: rgba(16, 185, 129, 0.08); padding: 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--ev-green); margin-top: 0.5rem;">
-                    <p style="font-size: 0.78rem; color: #a7f3d0;">
+                <div style="background: var(--ev-green-subtle); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--ev-green-border); border-left: 4px solid var(--ev-green); margin-top: 0.5rem;">
+                    <p style="font-size: 0.82rem; color: #065f46;">
                         🛡️ <strong>Integrity Safeguard:</strong> Billing amount is calculated directly by the backend database service. Client-side price tampering is mathematically impossible.
                     </p>
                 </div>
@@ -62,25 +62,25 @@
                 <div class="form-group">
                     <label>Payment Gateway / Instrument</label>
                     <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
-                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                        <label class="radio-select-card">
                             <input type="radio" name="payment_method" value="UPI" checked>
                             <div>
                                 <strong>UPI Instant Transfer</strong>
-                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Google Pay, PhonePe, Paytm, BHIM UPI</span>
+                                <span style="display: block; font-size: 0.78rem; color: var(--text-dim);">Google Pay, PhonePe, Paytm, BHIM UPI</span>
                             </div>
                         </label>
-                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                        <label class="radio-select-card">
                             <input type="radio" name="payment_method" value="FASTAG_EV">
                             <div>
                                 <strong>FASTag EV Wallet</strong>
-                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Automated RFID highway toll & EV deduction</span>
+                                <span style="display: block; font-size: 0.78rem; color: var(--text-dim);">Automated RFID highway toll & EV deduction</span>
                             </div>
                         </label>
-                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                        <label class="radio-select-card">
                             <input type="radio" name="payment_method" value="CREDIT_CARD">
                             <div>
                                 <strong>Corporate / Credit Card</strong>
-                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Visa, Mastercard, RuPay (Tokenized sandbox)</span>
+                                <span style="display: block; font-size: 0.78rem; color: var(--text-dim);">Visa, Mastercard, RuPay (Tokenized sandbox)</span>
                             </div>
                         </label>
                     </div>

@@ -4,7 +4,7 @@
 {% block page_heading %}Academic Vulnerability & Remediation Laboratory{% endblock %}
 
 {% block content %}
-<div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--electric-cyan);">
+<div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--ev-blue);">
     <div class="card-body">
         <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem;">Secure Software Engineering Vulnerability Showcase</h2>
         <p style="color: var(--text-muted); font-size: 0.92rem;">
@@ -21,7 +21,7 @@
             <h3 style="font-size: 1.2rem; font-weight: 700;">1. SQL Injection (CWE-89)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Station search query manipulation allowing authentication or schema bypass</span>
         </div>
-        <span class="badge badge-maintenance">Critical Severity</span>
+        <span class="badge badge-maintenance">⚠️ Critical Severity</span>
     </div>
 
     <div class="code-compare-grid">
@@ -57,7 +57,7 @@ results = cursor.execute(safe_sql, (f"%{user_query}%",)).fetchall()</code></pre>
             <h3 style="font-size: 1.2rem; font-weight: 700;">2. Plaintext Password Storage (CWE-256 / CWE-312)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Storing credentials in clear text compromises all accounts upon DB breach</span>
         </div>
-        <span class="badge badge-maintenance">Critical Severity</span>
+        <span class="badge badge-maintenance">⚠️ Critical Severity</span>
     </div>
 
     <div class="code-compare-grid">
@@ -94,7 +94,7 @@ cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
             <h3 style="font-size: 1.2rem; font-weight: 700;">3. Broken Authorization & Missing RBAC (CWE-285)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Unprivileged user invokes administrative function to alter hardware power ratings</span>
         </div>
-        <span class="badge badge-maintenance">High Severity</span>
+        <span class="badge badge-maintenance">⚠️ High Severity</span>
     </div>
 
     <div class="code-compare-grid">
@@ -137,7 +137,7 @@ def update_power():
             <h3 style="font-size: 1.2rem; font-weight: 700;">4. Client-Controlled Payment Amount (CWE-602)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Attacker alters JSON body payload from ₹450.00 to ₹1.00</span>
         </div>
-        <span class="badge badge-maintenance">High Severity</span>
+        <span class="badge badge-maintenance">⚠️ High Severity</span>
     </div>
 
     <div class="code-compare-grid">
@@ -173,7 +173,7 @@ amount = session["total_cost"] # Authoritative!</code></pre>
             <h3 style="font-size: 1.2rem; font-weight: 700;">5. Concurrent Slot Reservation Race Condition (CWE-362)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: TOCTOU race allows 2 drivers to book the same charger simultaneously</span>
         </div>
-        <span class="badge badge-maintenance">High Severity</span>
+        <span class="badge badge-maintenance">⚠️ High Severity</span>
     </div>
 
     <div class="code-compare-grid">
@@ -212,7 +212,7 @@ if cursor.rowcount == 0:
             <h3 style="font-size: 1.2rem; font-weight: 700;">6. Insecure Direct Object Reference / IDOR (CWE-639)</h3>
             <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Manipulating session_id parameter to view other drivers' private sessions/receipts</span>
         </div>
-        <span class="badge badge-maintenance">High Severity</span>
+        <span class="badge badge-maintenance">⚠️ High Severity</span>
     </div>
 
     <div class="code-compare-grid">

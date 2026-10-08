@@ -5,32 +5,32 @@
 
 {% block content %}
 <div style="max-width: 650px; margin: 0 auto;">
-    <div class="card" style="border-top: 4px solid var(--ev-green); background: rgba(18, 26, 47, 0.95);">
+    <div class="card" style="border-top: 4px solid var(--ev-green); background: #ffffff;">
         <div class="card-body" style="padding: 2.5rem;">
             <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="width: 56px; height: 56px; background: rgba(16, 185, 129, 0.15); border: 2px solid var(--ev-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem auto;">
+                <div style="width: 56px; height: 56px; background: var(--ev-green-subtle); border: 2px solid var(--ev-green-border); color: var(--ev-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; margin: 0 auto 1rem auto;">
                     ✓
                 </div>
-                <h2 style="font-size: 1.6rem; font-weight: 800;">Payment Successful</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Transaction Settled & Verified by Fleet Ledger</p>
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">Payment Successful</h2>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">Transaction Settled & Verified by Fleet Ledger</p>
             </div>
 
-            <div style="background: rgba(10, 15, 29, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 2rem;">
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 2rem;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                     <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Transaction Hash</span>
-                    <code style="color: var(--electric-cyan); font-weight: 700; font-size: 0.85rem;">{{ payment.transaction_ref }}</code>
+                    <code style="color: var(--ev-blue); font-weight: 700; font-size: 0.85rem;">{{ payment.transaction_ref }}</code>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                     <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Timestamp</span>
-                    <span style="font-size: 0.85rem;">{{ payment.created_at }} UTC</span>
+                    <span style="font-size: 0.85rem; color: var(--text-main);">{{ payment.created_at }} UTC</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                     <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Method</span>
-                    <span style="font-size: 0.85rem; font-weight: 600;">{{ payment.payment_method }}</span>
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">{{ payment.payment_method }}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Settlement Status</span>
-                    <span class="badge badge-available">PAID</span>
+                    <span class="badge badge-available">● PAID</span>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <span style="font-size: 1.1rem; font-weight: 700;">Grand Total Settled:</span>
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Grand Total Settled:</span>
                 <span style="font-size: 2rem; font-weight: 800; color: var(--ev-green);">
                     ₹{{ "%.2f"|format(payment.amount) }}
                 </span>

@@ -76,7 +76,7 @@
                     {% for p in points %}
                     <tr>
                         <td><strong>{{ p.station_name }}</strong></td>
-                        <td><span style="color: var(--electric-cyan); font-weight: 700;">{{ p.identifier }}</span></td>
+                        <td><span style="color: var(--ev-blue); font-weight: 700;">{{ p.identifier }}</span></td>
                         <td>{{ p.connector_type }}</td>
                         <td>
                             <form action="{{ url_for('admin.update_point', point_id=p.id) }}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">

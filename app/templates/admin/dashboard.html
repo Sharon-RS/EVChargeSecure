@@ -13,12 +13,12 @@
     </div>
     <div class="stat-card">
         <span class="stat-title">Charging Points</span>
-        <span class="stat-val" style="color: var(--electric-cyan);">{{ total_points }}</span>
+        <span class="stat-val" style="color: var(--ev-blue);">{{ total_points }}</span>
         <span class="stat-desc">{{ available_points }} Avail • {{ active_points }} Active • {{ maintenance_points }} Maint</span>
     </div>
     <div class="stat-card">
         <span class="stat-title">Total Power Dispensed</span>
-        <span class="stat-val" style="color: #38bdf8;">{{ "%.1f"|format(total_energy) }} <small style="font-size: 1rem;">kWh</small></span>
+        <span class="stat-val" style="color: var(--ev-blue);">{{ "%.1f"|format(total_energy) }} <small style="font-size: 1rem;">kWh</small></span>
         <span class="stat-desc">Grid energy delivered</span>
     </div>
     <div class="stat-card">
@@ -52,11 +52,11 @@
                         <tr>
                             <td><strong>{{ s.name }}</strong></td>
                             <td>{{ s.total_pts }}</td>
-                            <td><span class="badge badge-available">{{ s.avail_pts or 0 }}</span></td>
-                            <td><span class="badge badge-charging">{{ s.charging_pts or 0 }}</span></td>
+                            <td><span class="badge badge-available">● {{ s.avail_pts or 0 }}</span></td>
+                            <td><span class="badge badge-charging">⚡ {{ s.charging_pts or 0 }}</span></td>
                             <td>
                                 {% if s.maint_pts and s.maint_pts > 0 %}
-                                    <span class="badge badge-maintenance">{{ s.maint_pts }}</span>
+                                    <span class="badge badge-maintenance">⚠️ {{ s.maint_pts }}</span>
                                 {% else %}
                                     <span style="color: var(--text-dim);">0</span>
                                 {% endif %}
@@ -89,17 +89,17 @@
                         {% for log in recent_logs %}
                         <tr>
                             <td style="font-size: 0.75rem; color: var(--text-dim);">{{ log.timestamp | format_timestamp }}</td>
-                            <td><code style="color: var(--electric-cyan); font-size: 0.78rem;">{{ log.event_type }}</code></td>
+                            <td><code style="color: var(--ev-blue); font-size: 0.78rem;">{{ log.event_type }}</code></td>
                             <td>
                                 {% if log.severity == 'SECURITY_ALERT' %}
-                                    <span class="badge badge-maintenance">ALERT</span>
+                                    <span class="badge badge-maintenance">⚠️ ALERT</span>
                                 {% elif log.severity == 'WARNING' %}
-                                    <span class="badge badge-reserved">WARN</span>
+                                    <span class="badge badge-reserved">⏳ WARN</span>
                                 {% else %}
-                                    <span class="badge badge-available">INFO</span>
+                                    <span class="badge badge-available">● INFO</span>
                                 {% endif %}
                             </td>
-                            <td style="font-size: 0.8rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            <td style="font-size: 0.8rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted);">
                                 {{ log.description }}
                             </td>
                         </tr>
@@ -135,15 +135,15 @@
                     {% for sess in recent_sessions %}
                     <tr>
                         <td><strong>#{{ sess.id }}</strong></td>
-                        <td>{{ sess.username }}</td>
+                        <td><strong>{{ sess.username }}</strong></td>
                         <td>{{ sess.station_name }}</td>
-                        <td><span style="color: var(--electric-cyan); font-weight: 600;">{{ sess.point_name }}</span></td>
+                        <td><span style="color: var(--ev-blue); font-weight: 600;">{{ sess.point_name }}</span></td>
                         <td>{{ sess.start_time[:19].replace('T', ' ') }}</td>
                         <td>
                             {% if sess.status == 'ACTIVE' %}
-                                <span class="badge badge-charging">Charging</span>
+                                <span class="badge badge-charging">⚡ Charging</span>
                             {% else %}
-                                <span class="badge badge-completed">Completed</span>
+                                <span class="badge badge-completed">✓ Completed</span>
                             {% endif %}
                         </td>
                     </tr>
