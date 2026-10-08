@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Maintenance - EVChargeSecure{% endblock %}
+{% block page_heading %}Hardware Health & Maintenance Operations{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <!-- Schedule Maintenance Form -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Schedule Maintenance Task</h3>
+            <span class="badge badge-maintenance">Downtime Mitigation</span>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('admin.maintenance') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="station_id">Station Hub</label>
+                    <select name="station_id" id="station_id" class="form-control" required>
+                        {% for s in stations %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="point_id">Charging Terminal (Optional - Entire Station if Blank)</label>
+                    <select name="point_id" id="point_id" class="form-control">
+                        <option value="">-- General Station Maintenance --</option>
+                        {% for p in points %}
+                            <option value="{{ p.id }}">{{ p.identifier }} (Station #{{ p.station_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Maintenance Description / Incident Reason</label>
+                    <textarea id="description" name="description" class="form-control" rows="3" placeholder="e.g. Inverter thermal check, CCS2 latch replacement, scheduled firmware validation..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger" style="width: 100%;">
+                    Log Maintenance & Flag Point 🛠️
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Active and Resolved Tickets -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Maintenance Records & Health Log</h3>
+            <span class="badge badge-available">{{ tickets|length }} Total</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Station / Terminal</th>
+                            <th>Issue Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tickets %}
+                        <tr>
+                            <td>#{{ t.id }}</td>
+                            <td>
+                                <strong>{{ t.station_name }}</strong>
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">
+                                    {{ t.point_name if t.point_name else "Station-Wide" }}
+                                </span>
+                            </td>
+                            <td style="font-size: 0.82rem;">{{ t.description }}</td>
+                            <td>
+                                {% if t.status == 'IN_PROGRESS' %}
+                                    <span class="badge badge-maintenance">In Progress</span>
+                                {% else %}
+                                    <span class="badge badge-available">Resolved</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if t.status == 'IN_PROGRESS' %}
+                                    <form action="{{ url_for('admin.resolve_maintenance', ticket_id=t.id) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-success btn-sm">Resolve</button>
+                                    </form>
+                                {% else %}
+                                    <span style="font-size: 0.75rem; color: var(--text-dim);">✓ Operational</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                No active maintenance tickets logged.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

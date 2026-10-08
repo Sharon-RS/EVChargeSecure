@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}All Reservations - EVChargeSecure{% endblock %}
+{% block page_heading %}Fleet Reservation Ledger{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>System-Wide Slot Bookings</h3>
+        <span class="badge badge-available">{{ reservations|length }} Bookings Recorded</span>
+    </div>
+    <div class="card-body">
+        {% if reservations %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User (Driver)</th>
+                        <th>Station & Terminal</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reservations %}
+                    <tr>
+                        <td><strong>#{{ r.id }}</strong></td>
+                        <td>
+                            <strong>{{ r.username }}</strong>
+                            <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">{{ r.email }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ r.station_name }}</strong>
+                            <span style="display: block; font-size: 0.75rem; color: var(--electric-cyan);">{{ r.point_name }}</span>
+                        </td>
+                        <td>{{ r.start_time[:19].replace('T', ' ') }}</td>
+                        <td>{{ r.end_time[:19].replace('T', ' ') }}</td>
+                        <td>
+                            {% if r.status == 'ACTIVE' %}
+                                <span class="badge badge-available">ACTIVE</span>
+                            {% elif r.status == 'COMPLETED' %}
+                                <span class="badge badge-completed">COMPLETED</span>
+                            {% elif r.status == 'CANCELLED' %}
+                                <span class="badge badge-maintenance">CANCELLED</span>
+                            {% else %}
+                                <span class="badge badge-reserved">{{ r.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reservations currently recorded.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

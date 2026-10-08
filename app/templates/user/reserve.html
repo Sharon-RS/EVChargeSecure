@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Reserve Slot - {{ point.identifier }}{% endblock %}
+{% block page_heading %}Reserve Charging Terminal{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3>Terminal Specifications</h3>
+            <span class="badge badge-available">Ready for Locking</span>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Hub Location</span>
+                    <h4 style="font-size: 1.1rem; color: var(--text-main);">{{ point.station_name }}</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">{{ point.location }}</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Terminal Code</span>
+                        <p style="font-size: 1.2rem; font-weight: 700; color: var(--electric-cyan);">{{ point.identifier }}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Connector Architecture</span>
+                        <p style="font-size: 1rem; font-weight: 600;">{{ point.connector_type }}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Rated Power</span>
+                        <p style="font-size: 1.2rem; font-weight: 700; color: #38bdf8;">{{ point.max_power_kw }} kW</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Energy Tariff</span>
+                        <p style="font-size: 1.2rem; font-weight: 700; color: var(--ev-green);">₹{{ "%.2f"|format(point.tariff_per_kwh) }} <small style="font-size: 0.8rem;">/ kWh</small></p>
+                    </div>
+                </div>
+                <div style="background: rgba(0, 242, 254, 0.05); padding: 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--electric-cyan);">
+                    <p style="font-size: 0.78rem; color: #bae6fd;">
+                        🔒 <strong>Zero-Race Guarantee:</strong> This booking uses an atomic SQL test-and-set transaction to prevent concurrent double-booking.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Reservation Timeframe</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('user.reserve_point', point_id=point.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="duration">Hold Duration</label>
+                    <select name="duration" id="duration" class="form-control">
+                        <option value="15">15 Minutes (Quick Arrival)</option>
+                        <option value="30" selected>30 Minutes (Recommended)</option>
+                        <option value="45">45 Minutes</option>
+                        <option value="60">60 Minutes (Max Booking Window)</option>
+                    </select>
+                    <p class="form-hint">The slot will be held exclusively for your vehicle during this window.</p>
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Confirm Atomic Reservation ⚡</button>
+                    <a href="{{ url_for('user.station_detail', station_id=point.station_id) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

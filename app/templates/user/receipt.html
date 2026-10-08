@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Receipt - {{ payment.transaction_ref }}{% endblock %}
+{% block page_heading %}Official Payment Receipt{% endblock %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto;">
+    <div class="card" style="border-top: 4px solid var(--ev-green); background: rgba(18, 26, 47, 0.95);">
+        <div class="card-body" style="padding: 2.5rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="width: 56px; height: 56px; background: rgba(16, 185, 129, 0.15); border: 2px solid var(--ev-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem auto;">
+                    ✓
+                </div>
+                <h2 style="font-size: 1.6rem; font-weight: 800;">Payment Successful</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Transaction Settled & Verified by Fleet Ledger</p>
+            </div>
+
+            <div style="background: rgba(10, 15, 29, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Transaction Hash</span>
+                    <code style="color: var(--electric-cyan); font-weight: 700; font-size: 0.85rem;">{{ payment.transaction_ref }}</code>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Timestamp</span>
+                    <span style="font-size: 0.85rem;">{{ payment.created_at }} UTC</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Method</span>
+                    <span style="font-size: 0.85rem; font-weight: 600;">{{ payment.payment_method }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">Settlement Status</span>
+                    <span class="badge badge-available">PAID</span>
+                </div>
+            </div>
+
+            <div style="border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 1.25rem 0; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-muted);">Station Location:</span>
+                    <strong>{{ session_data.station_name }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-muted);">Charging Terminal:</span>
+                    <strong>{{ session_data.point_name }} ({{ session_data.connector_type }})</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-muted);">Energy Dispensed:</span>
+                    <strong>{{ session_data.energy_kwh }} kWh</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">Unit Rate:</span>
+                    <strong>₹{{ "%.2f"|format(session_data.tariff_per_kwh) }} / kWh</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <span style="font-size: 1.1rem; font-weight: 700;">Grand Total Settled:</span>
+                <span style="font-size: 2rem; font-weight: 800; color: var(--ev-green);">
+                    ₹{{ "%.2f"|format(payment.amount) }}
+                </span>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="window.print()">🖨️ Print Receipt</button>
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary" style="flex: 1;">Return to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

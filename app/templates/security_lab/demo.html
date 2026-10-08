@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Security Laboratory Demonstrations - EVChargeSecure{% endblock %}
+{% block page_heading %}Academic Vulnerability & Remediation Laboratory{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--electric-cyan);">
+    <div class="card-body">
+        <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem;">Secure Software Engineering Vulnerability Showcase</h2>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+            This interactive laboratory module demonstrates the 6 critical vulnerabilities identified during threat modeling, contrasted directly against their implemented secure production defenses.
+            Use the controls below to observe exploit mechanics vs zero-trust enforcement in real time.
+        </p>
+    </div>
+</div>
+
+<!-- DEMO 1: SQL INJECTION -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">1. SQL Injection (CWE-89)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Station search query manipulation allowing authentication or schema bypass</span>
+        </div>
+        <span class="badge badge-maintenance">Critical Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation</div>
+            <pre><code># Dynamic string formatting enables SQL syntax injection
+raw_sql = f"SELECT * FROM stations WHERE name LIKE '%{user_query}%'"
+results = cursor.execute(raw_sql).fetchall()</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Secure Parameterized Fix</div>
+            <pre><code># Parameterized query engine isolates data from instructions
+safe_sql = "SELECT * FROM stations WHERE name LIKE ?"
+results = cursor.execute(safe_sql, (f"%{user_query}%",)).fetchall()</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="sqliInput">Test Injection Payload</label>
+            <input type="text" id="sqliInput" class="form-control" value="' OR '1'='1' --">
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testSQLi('vulnerable')">Execute Exploit (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testSQLi('secure')">Execute Mitigation (Secure)</button>
+    </div>
+    <div class="output-box" id="sqliOutput">// Click an execution mode above to inspect database query results...</div>
+</div>
+
+<!-- DEMO 2: PLAINTEXT PASSWORD STORAGE -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">2. Plaintext Password Storage (CWE-256 / CWE-312)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Storing credentials in clear text compromises all accounts upon DB breach</span>
+        </div>
+        <span class="badge badge-maintenance">Critical Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation</div>
+            <pre><code># Storing unencrypted string directly in database
+cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", 
+               (username, raw_password))</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Secure Password Hashing</div>
+            <pre><code># Werkzeug Scrypt/PBKDF2 with CSPRNG salt & high work factor
+password_hash = generate_password_hash(raw_password)
+cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", 
+               (username, password_hash))</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="passInput">Sample Password Input</label>
+            <input type="text" id="passInput" class="form-control" value="DriverSecurePass2026!">
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testPassword('vulnerable')">Test Plaintext (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testPassword('secure')">Test Hashing (Secure)</button>
+    </div>
+    <div class="output-box" id="passOutput">// Inspect database storage representation...</div>
+</div>
+
+<!-- DEMO 3: BROKEN AUTHORIZATION -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">3. Broken Authorization & Missing RBAC (CWE-285)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Unprivileged user invokes administrative function to alter hardware power ratings</span>
+        </div>
+        <span class="badge badge-maintenance">High Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation</div>
+            <pre><code># Endpoint only checks if user is logged in, but neglects role
+@app.route("/admin/tune-power", methods=["POST"])
+@login_required
+def update_power():
+    apply_power_limits(...) # Any logged-in user can execute!</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Secure RBAC Decorator</div>
+            <pre><code># @admin_required enforces session.get('role') == 'ADMIN'
+@app.route("/admin/tune-power", methods=["POST"])
+@admin_required
+def update_power():
+    apply_power_limits(...) # Strictly restricted to ADMIN role</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="authzRole">Simulated Requesting Role</label>
+            <select id="authzRole" class="form-control">
+                <option value="USER" selected>USER (Standard EV Driver)</option>
+                <option value="ADMIN">ADMIN (Fleet Supervisor)</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testAuthz('vulnerable')">Call Action (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testAuthz('secure')">Call Action (Secure)</button>
+    </div>
+    <div class="output-box" id="authzOutput">// Inspect access control enforcement response...</div>
+</div>
+
+<!-- DEMO 4: CLIENT-CONTROLLED PAYMENT AMOUNT -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">4. Client-Controlled Payment Amount (CWE-602)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Attacker alters JSON body payload from ₹450.00 to ₹1.00</span>
+        </div>
+        <span class="badge badge-maintenance">High Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation</div>
+            <pre><code># Blindly trusts client-supplied payment amount parameter
+amount = float(request.form.get("amount"))
+db.execute("INSERT INTO payments (amount) VALUES (?)", (amount,))</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Authoritative Server Pricing</div>
+            <pre><code># Client input ignored; server retrieves energy * tariff from DB
+session = db.execute("SELECT total_cost FROM charging_sessions WHERE id = ?", (id,)).fetchone()
+amount = session["total_cost"] # Authoritative!</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="paymentInput">Client Manipulated Amount (Actual Bill is ₹450.00)</label>
+            <input type="number" step="0.01" id="paymentInput" class="form-control" value="1.00">
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testPayment('vulnerable')">Submit Tampered (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testPayment('secure')">Submit Tampered (Secure)</button>
+    </div>
+    <div class="output-box" id="paymentOutput">// Inspect payment calculation and validation...</div>
+</div>
+
+<!-- DEMO 5: CONCURRENT RESERVATION RACE CONDITION -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">5. Concurrent Slot Reservation Race Condition (CWE-362)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: TOCTOU race allows 2 drivers to book the same charger simultaneously</span>
+        </div>
+        <span class="badge badge-maintenance">High Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation (TOCTOU)</div>
+            <pre><code># Check and update separated: concurrency window opens
+point = db.execute("SELECT status FROM points WHERE id = ?", (id,)).fetchone()
+if point["status"] == "AVAILABLE":
+    # Time gap occurs here during high load
+    db.execute("UPDATE points SET status = 'RESERVED' WHERE id = ?", (id,))</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Atomic Test-and-Set Lock</div>
+            <pre><code># Atomic single-statement update guarantees isolation
+cursor.execute("UPDATE points SET status = 'RESERVED' WHERE id = ? AND status = 'AVAILABLE'", (id,))
+if cursor.rowcount == 0:
+    raise ConflictError("Point was reserved by concurrent request")</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="racePointId">Target Charging Point Terminal</label>
+            <input type="number" id="racePointId" class="form-control" value="1">
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testRace('vulnerable')">Simulate Race (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testRace('secure')">Simulate Atomic Lock (Secure)</button>
+    </div>
+    <div class="output-box" id="raceOutput">// Inspect concurrency arbitration...</div>
+</div>
+
+<!-- DEMO 6: IDOR (INSECURE DIRECT OBJECT REFERENCE) -->
+<div class="lab-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700;">6. Insecure Direct Object Reference / IDOR (CWE-639)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Threat: Manipulating session_id parameter to view other drivers' private sessions/receipts</span>
+        </div>
+        <span class="badge badge-maintenance">High Severity</span>
+    </div>
+
+    <div class="code-compare-grid">
+        <div class="code-panel vulnerable">
+            <div class="code-title" style="color: var(--ev-red);">❌ Vulnerable Implementation</div>
+            <pre><code># Object retrieved strictly by ID without asserting ownership
+@app.route("/receipt/<int:id>")
+def get_receipt(id):
+    return db.execute("SELECT * FROM payments WHERE id = ?", (id,)).fetchone()</code></pre>
+        </div>
+        <div class="code-panel secure">
+            <div class="code-title" style="color: var(--ev-green);">✓ Horizontal Scoping (Owner Binding)</div>
+            <pre><code># Record must match both object ID AND the caller's session user_id
+@app.route("/receipt/<int:id>")
+@login_required
+def get_receipt(id):
+    return db.execute("SELECT * FROM payments WHERE id = ? AND user_id = ?", 
+                      (id, session['user_id'])).fetchone()</code></pre>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: 1rem;">
+        <div style="flex: 1;">
+            <label for="idorSessionId">Target Session ID (Belongs to User 5)</label>
+            <input type="number" id="idorSessionId" class="form-control" value="42">
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="testIDOR('vulnerable')">Test IDOR (Vulnerable)</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="testIDOR('secure')">Test Scoped Check (Secure)</button>
+    </div>
+    <div class="output-box" id="idorOutput">// Inspect horizontal privilege access result...</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/lab_demo.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - EVChargeSecure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <div class="auth-header">
+                <div class="brand-icon" style="margin: 0 auto; width: 48px; height: 48px; font-size: 1.5rem;">⚡</div>
+                <h2>Register EV Driver</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem;">Join the Secure Zero-Trust EV Charging Network</p>
+            </div>
+
+            <!-- Flash alerts -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('auth.register') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" value="{{ username or '' }}" required autofocus autocomplete="username">
+                    <p class="form-hint">3-30 characters (letters, numbers, hyphens, underscores)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ email or '' }}" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required autocomplete="new-password">
+                    <p class="form-hint">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol (@$!%*?&_#-)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Create Secure Account</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                Already have an account? <a href="{{ url_for('auth.login') }}" style="color: var(--electric-cyan); text-decoration: none; font-weight: 600;">Sign In</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

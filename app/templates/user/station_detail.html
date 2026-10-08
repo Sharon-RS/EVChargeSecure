@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{{ station.name }} - EVChargeSecure{% endblock %}
+{% block page_heading %}{{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700;">{{ station.name }}</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">📍 {{ station.location }} • {{ station.address }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('user.stations') }}" class="btn btn-secondary btn-sm">← Back to Stations</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Charging Point Terminals</h3>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Real-time Telemetry & Slot Locks</span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Terminal ID</th>
+                        <th>Connector</th>
+                        <th>Max Power</th>
+                        <th>Tariff / kWh</th>
+                        <th>Live Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in points %}
+                    <tr>
+                        <td>
+                            <strong style="color: var(--electric-cyan); font-size: 1rem;">{{ p.identifier }}</strong>
+                        </td>
+                        <td>{{ p.connector_type }}</td>
+                        <td><strong>{{ p.max_power_kw }} kW</strong></td>
+                        <td style="color: var(--ev-green); font-weight: 600;">₹{{ "%.2f"|format(p.tariff_per_kwh) }}</td>
+                        <td>
+                            {% if p.status == 'AVAILABLE' %}
+                                <span class="badge badge-available">● Available</span>
+                            {% elif p.status == 'CHARGING' %}
+                                <span class="badge badge-charging">⚡ In Session</span>
+                            {% elif p.status == 'RESERVED' %}
+                                <span class="badge badge-reserved">⏳ Reserved</span>
+                            {% elif p.status == 'MAINTENANCE' %}
+                                <span class="badge badge-maintenance">🛠️ Maintenance</span>
+                            {% else %}
+                                <span class="badge badge-maintenance">Offline</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if p.status == 'AVAILABLE' %}
+                                <a href="{{ url_for('user.reserve_point', point_id=p.id) }}" class="btn btn-primary btn-sm">
+                                    Book Slot
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                    Unavailable
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

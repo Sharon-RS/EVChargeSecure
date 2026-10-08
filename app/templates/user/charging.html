@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Active Charging - Session #{{ session_data.id }}{% endblock %}
+{% block page_heading %}Active DC/AC Fast Charge{% endblock %}
+
+{% block content %}
+<div class="charger-meter">
+    <div class="battery-ring-outer">
+        <div class="battery-ring-inner">
+            <span class="battery-kwh" id="liveEnergyKwh" data-initial="14.25">14.25</span>
+            <div class="battery-label">kWh Delivered</div>
+        </div>
+    </div>
+    <div style="margin-top: 1.5rem; text-align: center;">
+        <span class="badge badge-charging" style="font-size: 0.9rem; padding: 0.4rem 1rem;">⚡ High Voltage Transfer Active</span>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+            Station: <strong>{{ session_data.station_name }}</strong> • Terminal: <strong>{{ session_data.point_name }}</strong>
+        </p>
+    </div>
+</div>
+
+<div class="grid-3">
+    <div class="stat-card">
+        <span class="stat-title">Current Delivery Power</span>
+        <span class="stat-val" id="livePowerKw" data-power="{{ session_data.max_power_kw }}" style="color: #38bdf8;">
+            {{ session_data.max_power_kw }} <small style="font-size: 1rem;">kW</small>
+        </span>
+        <span class="stat-desc">Peak calibrated rate</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-title">Active Tariff</span>
+        <span class="stat-val" style="color: var(--ev-green);">
+            ₹{{ "%.2f"|format(session_data.tariff_per_kwh) }}
+        </span>
+        <span class="stat-desc">Per kWh base rate</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-title">Accrued Estimated Cost</span>
+        <span class="stat-val" id="liveCostInr" data-tariff="{{ session_data.tariff_per_kwh }}" style="color: var(--electric-cyan);">
+            ₹263.63
+        </span>
+        <span class="stat-desc">Subject to server-side final metering</span>
+    </div>
+</div>
+
+<div class="card" style="text-align: center; padding: 2rem;">
+    <h3 style="margin-bottom: 0.5rem;">Terminate Charging Session</h3>
+    <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 500px; margin: 0 auto 1.5rem auto;">
+        Stopping will safely ramp down the inverter voltage, finalize meter telemetry, and calculate your authoritative invoice amount.
+    </p>
+
+    <form action="{{ url_for('user.stop_charging', session_id=session_data.id) }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-danger" style="padding: 0.8rem 2.5rem; font-size: 1.05rem;" onclick="return confirm('Stop charging session and proceed to checkout?')">
+            🛑 Stop Charging & Settle Payment
+        </button>
+    </form>
+</div>
+{% endblock %}

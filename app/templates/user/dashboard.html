@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - EVChargeSecure{% endblock %}
+{% block page_heading %}Driver Fleet Portal{% endblock %}
+
+{% block content %}
+<!-- Top Metrics Cards -->
+<div class="grid-4">
+    <div class="stat-card">
+        <span class="stat-title">Completed Sessions</span>
+        <span class="stat-val">{{ stats.total_sessions or 0 }}</span>
+        <span class="stat-desc">Lifetime charging events</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-title">Energy Consumed</span>
+        <span class="stat-val" style="color: var(--electric-cyan);">{{ "%.1f"|format(stats.total_energy or 0.0) }} <small style="font-size: 1rem;">kWh</small></span>
+        <span class="stat-desc">Clean green energy</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-title">Total Expenditure</span>
+        <span class="stat-val" style="color: var(--ev-green);">{{ stats.total_spent | format_inr }}</span>
+        <span class="stat-desc">Authoritative verified payments</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-title">System Status</span>
+        <span class="stat-val" style="color: #38bdf8; font-size: 1.4rem; padding-top: 0.3rem;">ONLINE</span>
+        <span class="stat-desc">Zero security anomalies</span>
+    </div>
+</div>
+
+<!-- Active Charging Alert -->
+{% if active_session %}
+<div class="card" style="border-left: 4px solid var(--electric-cyan); background: rgba(0, 242, 254, 0.05);">
+    <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="badge badge-charging">⚡ Charging Active</span>
+            <h3 style="margin: 0;">Session #{{ active_session.id }} at {{ active_session.station_name }}</h3>
+        </div>
+        <a href="{{ url_for('user.charging_view', session_id=active_session.id) }}" class="btn btn-primary btn-sm">View Live Meter →</a>
+    </div>
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;">
+        <div>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Connected to Point <strong>{{ active_session.point_name }}</strong> (Max Output: {{ active_session.max_power_kw }} kW)
+            </p>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.25rem;">
+                Tariff: ₹{{ active_session.tariff_per_kwh }}/kWh • Began: {{ active_session.start_time[:19].replace('T', ' ') }}
+            </p>
+        </div>
+        <div>
+            <form action="{{ url_for('user.stop_charging', session_id=active_session.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm">Stop & Complete Charging</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Pending Payment Alert -->
+{% if pending_payment %}
+<div class="card" style="border-left: 4px solid var(--ev-amber); background: rgba(245, 158, 11, 0.05);">
+    <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="badge badge-reserved">💳 Unsettled Payment</span>
+            <h3 style="margin: 0;">Payment Due for Session #{{ pending_payment.id }}</h3>
+        </div>
+        <a href="{{ url_for('user.payment_view', session_id=pending_payment.id) }}" class="btn btn-success btn-sm">Pay ₹{{ "%.2f"|format(pending_payment.total_cost) }} Now →</a>
+    </div>
+    <div class="card-body">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Station: <strong>{{ pending_payment.station_name }}</strong> (Point: {{ pending_payment.point_name }}) • Energy: <strong>{{ pending_payment.energy_kwh }} kWh</strong>
+        </p>
+        <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 0.25rem;">
+            Verified Server Amount: ₹{{ "%.2f"|format(pending_payment.total_cost) }}. Please complete settlement to unlock future bookings.
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Active Reservation Card -->
+{% if active_reservation %}
+<div class="card" style="border-left: 4px solid var(--ev-green);">
+    <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="badge badge-available">Slot Locked</span>
+            <h3 style="margin: 0;">Active Reservation: {{ active_reservation.point_name }}</h3>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <form action="{{ url_for('user.start_charging', point_id=active_reservation.point_id) }}" method="POST" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-success btn-sm">Plug In & Charge ⚡</button>
+            </form>
+            <form action="{{ url_for('user.cancel_reservation', reservation_id=active_reservation.id) }}" method="POST" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Cancel this slot reservation?')">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div>
+                <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Station</span>
+                <p style="font-weight: 600;">{{ active_reservation.station_name }}</p>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Connector Type</span>
+                <p style="font-weight: 600;">{{ active_reservation.connector_type }}</p>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Reserved Window</span>
+                <p style="font-weight: 600;">Until {{ active_reservation.end_time[11:16] }} UTC</p>
+            </div>
+            <div>
+                <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Tariff</span>
+                <p style="font-weight: 600; color: var(--ev-green);">₹{{ active_reservation.tariff_per_kwh }}/kWh</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Station Grid -->
+<div class="card">
+    <div class="card-header">
+        <h3>Featured EV Charging Hubs</h3>
+        <a href="{{ url_for('user.stations') }}" class="btn btn-secondary btn-sm">Explore All Stations →</a>
+    </div>
+    <div class="card-body">
+        <div class="grid-2" style="margin-bottom: 0;">
+            {% for s in stations %}
+            <div style="background: rgba(10, 15, 29, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <div>
+                        <h4 style="font-size: 1.1rem; font-weight: 700;">{{ s.name }}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">📍 {{ s.location }}</p>
+                    </div>
+                    {% if s.available_points > 0 %}
+                        <span class="badge badge-available">{{ s.available_points }} / {{ s.total_points }} Free</span>
+                    {% else %}
+                        <span class="badge badge-maintenance">Busy</span>
+                    {% endif %}
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1rem;">{{ s.address }}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.78rem; color: var(--electric-cyan);">CCS2 • Type 2 Fast DC/AC</span>
+                    <a href="{{ url_for('user.station_detail', station_id=s.id) }}" class="btn btn-primary btn-sm">View Chargers</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

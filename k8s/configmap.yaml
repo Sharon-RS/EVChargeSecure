@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evcharge-config
+  namespace: evcharge-secure
+  labels:
+    app.kubernetes.io/name: evchargesecure
+data:
+  FLASK_ENV: "production"
+  PORT: "5000"
+  HOST: "0.0.0.0"
+  DATABASE_PATH: "/app/data/evcharge_secure.db"
+  MAX_FAILED_LOGIN_ATTEMPTS: "5"
+  LOCKOUT_DURATION_MINUTES: "15"
+  LAB_VULN_DEMO_ENABLED: "false"  # Explicitly disabled in production deployment as required!

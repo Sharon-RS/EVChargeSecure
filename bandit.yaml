@@ -1,0 +1,9 @@
+# Bandit AST-based Security Linter Configuration for EVChargeSecure
+# Profiles and skips for secure application evaluation
+skips: ['B101', 'B104']  # B101: assert statements in tests, B104: 0.0.0.0 bind for container interfaces
+
+# Exclude test files and intentionally isolated educational sandbox from production SAST gate
+exclude_dirs:
+  - 'tests'
+  - '.venv'
+  - 'venv'

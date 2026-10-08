@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Security Audit Logs - EVChargeSecure{% endblock %}
+{% block page_heading %}Immutable Security & Audit Trail{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Audit Filter Controls</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Events are automatically sanitized; credentials & tokens are never retained.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ url_for('admin.audit_logs') }}" class="btn {{ 'btn-primary' if not current_severity else 'btn-secondary' }} btn-sm">All Logs</a>
+            <a href="{{ url_for('admin.audit_logs', severity='INFO') }}" class="btn {{ 'btn-primary' if current_severity == 'INFO' else 'btn-secondary' }} btn-sm">INFO</a>
+            <a href="{{ url_for('admin.audit_logs', severity='WARNING') }}" class="btn {{ 'btn-primary' if current_severity == 'WARNING' else 'btn-secondary' }} btn-sm">WARNING</a>
+            <a href="{{ url_for('admin.audit_logs', severity='SECURITY_ALERT') }}" class="btn {{ 'btn-primary' if current_severity == 'SECURITY_ALERT' else 'btn-secondary' }} btn-sm">SECURITY ALERTS</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>System Audit Entries</h3>
+        <span class="badge badge-available">{{ logs|length }} Log Entries</span>
+    </div>
+    <div class="card-body">
+        {% if logs %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp (UTC)</th>
+                        <th>User Account</th>
+                        <th>Client IP</th>
+                        <th>Event Category</th>
+                        <th>Severity</th>
+                        <th>Sanitized Audit Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace;">{{ log.timestamp }}</td>
+                        <td>
+                            <strong>{{ log.username or 'Anonymous/System' }}</strong>
+                            {% if log.user_id %}
+                                <span style="font-size: 0.7rem; color: var(--text-dim); display: block;">ID: #{{ log.user_id }}</span>
+                            {% endif %}
+                        </td>
+                        <td><code style="color: var(--electric-cyan); font-size: 0.8rem;">{{ log.ip_address or '127.0.0.1' }}</code></td>
+                        <td><code style="font-size: 0.8rem; font-weight: 700; color: #f1f5f9;">{{ log.event_type }}</code></td>
+                        <td>
+                            {% if log.severity == 'SECURITY_ALERT' %}
+                                <span class="badge badge-maintenance">ALERT</span>
+                            {% elif log.severity == 'WARNING' %}
+                                <span class="badge badge-reserved">WARNING</span>
+                            {% else %}
+                                <span class="badge badge-available">INFO</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-size: 0.84rem; max-width: 400px;">
+                            {{ log.description }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No audit logs matched current filter.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evcharge-deployment
+  namespace: evcharge-secure
+  labels:
+    app: evchargesecure
+    app.kubernetes.io/name: evchargesecure
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: evchargesecure
+  template:
+    metadata:
+      labels:
+        app: evchargesecure
+    spec:
+      # Pod-level security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: evcharge-app
+          image: evchargesecure:1.0.0
+          imagePullPolicy: IfNotPresent
+          
+          # Container-level security context
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+          ports:
+            - containerPort: 5000
+              name: http
+              protocol: TCP
+
+          envFrom:
+            - configMapRef:
+                name: evcharge-config
+            - secretRef:
+                name: evcharge-secrets
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          livenessProbe:
+            httpGet:
+              path: /auth/login
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /auth/login
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 2
+
+          # Writable volume mounts for readOnlyRootFilesystem compliance
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+            - name: tmp-volume
+              mountPath: /tmp
+
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}

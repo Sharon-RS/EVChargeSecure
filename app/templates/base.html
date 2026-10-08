@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}EVChargeSecure - Secure EV Charging Platform{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="{{ url_for('user.dashboard') if current_user.id else url_for('auth.login') }}" class="brand">
+                <div class="brand-icon">⚡</div>
+                <div class="brand-text">
+                    <h2>EVChargeSecure</h2>
+                    <span>Secure Fleet Grid</span>
+                </div>
+            </a>
+
+            <ul class="nav-links">
+                {% if current_user.id %}
+                    <li class="nav-section-title">User Operations</li>
+                    <li><a href="{{ url_for('user.dashboard') }}" class="{{ 'active' if request.endpoint == 'user.dashboard' }}">📊 Overview Dashboard</a></li>
+                    <li><a href="{{ url_for('user.stations') }}" class="{{ 'active' if request.endpoint in ['user.stations', 'user.station_detail'] }}">🔌 Locate Stations</a></li>
+                    <li><a href="{{ url_for('user.history') }}" class="{{ 'active' if request.endpoint == 'user.history' }}">📜 Charging History</a></li>
+
+                    {% if current_user.role == 'ADMIN' %}
+                        <li class="nav-section-title">Fleet Administration</li>
+                        <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">⚡ Admin Fleet Hub</a></li>
+                        <li><a href="{{ url_for('admin.manage_stations') }}" class="{{ 'active' if request.endpoint == 'admin.manage_stations' }}">🏢 Manage Stations</a></li>
+                        <li><a href="{{ url_for('admin.manage_points') }}" class="{{ 'active' if request.endpoint == 'admin.manage_points' }}">🔌 Charging Points & Power</a></li>
+                        <li><a href="{{ url_for('admin.maintenance') }}" class="{{ 'active' if request.endpoint == 'admin.maintenance' }}">🛠️ Maintenance Logs</a></li>
+                        <li><a href="{{ url_for('admin.reservations') }}" class="{{ 'active' if request.endpoint == 'admin.reservations' }}">📅 All Reservations</a></li>
+                        <li><a href="{{ url_for('admin.sessions') }}" class="{{ 'active' if request.endpoint == 'admin.sessions' }}">🔋 Active Sessions</a></li>
+                        <li><a href="{{ url_for('admin.audit_logs') }}" class="{{ 'active' if request.endpoint == 'admin.audit_logs' }}">🛡️ Security Audit Logs</a></li>
+                    {% endif %}
+                {% endif %}
+
+                <li class="nav-section-title">Academic Assessment</li>
+                <li><a href="{{ url_for('vulns_demo.lab_home') }}" class="{{ 'active' if request.endpoint == 'vulns_demo.lab_home' }}">🔬 Security Lab Showcase</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                {% if current_user.id %}
+                    <div class="user-badge">
+                        <div>
+                            <strong>{{ current_user.username }}</strong>
+                        </div>
+                        <span class="user-role-pill {{ 'role-admin' if current_user.role == 'ADMIN' else 'role-user' }}">
+                            {{ current_user.role }}
+                        </span>
+                    </div>
+                    <form action="{{ url_for('auth.logout') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%;">Sign Out</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm" style="width: 100%;">Sign In</a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h1>{% block page_heading %}Secure EV Management System{% endblock %}</h1>
+                </div>
+                <div class="top-actions">
+                    <div class="security-badge">
+                        <span class="security-pulse"></span>
+                        <span>Zero-Trust Shield Active</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-container">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    <span>{{ message }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

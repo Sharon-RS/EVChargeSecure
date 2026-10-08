@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Settle Payment - Session #{{ session_data.id }}{% endblock %}
+{% block page_heading %}Secure Energy Settlement{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <!-- Invoice Summary -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Invoice Breakdown</h3>
+            <span class="badge badge-completed">Session Completed</span>
+        </div>
+        <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                    <span style="color: var(--text-muted);">Session Identifier:</span>
+                    <strong>#{{ session_data.id }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                    <span style="color: var(--text-muted);">Charging Station:</span>
+                    <strong>{{ session_data.station_name }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                    <span style="color: var(--text-muted);">Terminal Point:</span>
+                    <strong>{{ session_data.point_name }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                    <span style="color: var(--text-muted);">Total Energy Dispensed:</span>
+                    <strong>{{ session_data.energy_kwh }} kWh</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                    <span style="color: var(--text-muted);">Approved Unit Rate:</span>
+                    <strong>₹{{ "%.2f"|format(session_data.tariff_per_kwh) }} / kWh</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem;">
+                    <span style="font-size: 1.1rem; font-weight: 700;">Total Authoritative Amount:</span>
+                    <span style="font-size: 1.8rem; font-weight: 800; color: var(--electric-cyan);">
+                        ₹{{ "%.2f"|format(session_data.total_cost) }}
+                    </span>
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.08); padding: 0.85rem; border-radius: var(--radius-sm); border-left: 3px solid var(--ev-green); margin-top: 0.5rem;">
+                    <p style="font-size: 0.78rem; color: #a7f3d0;">
+                        🛡️ <strong>Integrity Safeguard:</strong> Billing amount is calculated directly by the backend database service. Client-side price tampering is mathematically impossible.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Instrument Selection -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Select Payment Method</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('user.payment_view', session_id=session_data.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label>Payment Gateway / Instrument</label>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="UPI" checked>
+                            <div>
+                                <strong>UPI Instant Transfer</strong>
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Google Pay, PhonePe, Paytm, BHIM UPI</span>
+                            </div>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="FASTAG_EV">
+                            <div>
+                                <strong>FASTag EV Wallet</strong>
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Automated RFID highway toll & EV deduction</span>
+                            </div>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.75rem; background: rgba(10, 15, 29, 0.6); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                            <input type="radio" name="payment_method" value="CREDIT_CARD">
+                            <div>
+                                <strong>Corporate / Credit Card</strong>
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-dim);">Visa, Mastercard, RuPay (Tokenized sandbox)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+                        Authorize Payment of ₹{{ "%.2f"|format(session_data.total_cost) }} 🔒
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
