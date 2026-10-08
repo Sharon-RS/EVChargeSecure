@@ -27,7 +27,7 @@ spec:
 
       containers:
         - name: evcharge-app
-          image: evchargesecure:1.0.0
+          image: evchargsecure:v0.2
           imagePullPolicy: IfNotPresent
           
           # Container-level security context
