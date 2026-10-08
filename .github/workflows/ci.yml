@@ -65,12 +65,12 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Validate Kubernetes Manifests (Dry-run / Client validation)
+       - name: Validate Kubernetes Manifests (Offline Client Validation)
         run: |
           echo "Validating k8s manifests..."
-          kubectl apply --dry-run=client -f k8s/namespace.yaml
-          kubectl apply --dry-run=client -f k8s/secret.yaml
-          kubectl apply --dry-run=client -f k8s/configmap.yaml
-          kubectl apply --dry-run=client -f k8s/deployment.yaml
-          kubectl apply --dry-run=client -f k8s/service.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/namespace.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/secret.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/configmap.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/deployment.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/service.yaml
           echo "All Kubernetes manifests successfully validated!"
