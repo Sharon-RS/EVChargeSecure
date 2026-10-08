@@ -63,4 +63,4 @@ jobs:
       - name: Validate Kubernetes Manifests
         uses: docker://ghcr.io/yannh/kubeconform:latest
         with:
-          args: "-strict -summary k8s/*.yaml"
+          args: "-strict -summary k8s/namespace.yaml k8s/secret.yaml k8s/configmap.yaml k8s/deployment.yaml k8s/service.yaml"
